@@ -13,7 +13,27 @@ def linear_regression(x, a, b):
     return a * x + b
 
 
-def fit_curve(argv1, argv2):
+def quadratic_regression(x, a, b, c):
+    return a * x ** 2 + b * x + c
+
+
+def quartic_regression(x, a, b, c, d, e):
+    return a * x ** 4 + b * x ** 3 + c * x ** 2 + d * x + e
+
+
+def nonlinear_4pl_regression(x, a, b, c, d):
+    return d + ((a - d) / (1 + (x / c) ** b))
+
+
+def nonlinear_half_life_regression(x, a, b, c):
+    return a + (b / np.exp(2 * x / c))
+
+
+all_regressions = [linear_regression, quadratic_regression, quartic_regression, nonlinear_4pl_regression,
+                   nonlinear_half_life_regression]
+
+
+def fit_curve(argv1, argv2, selected_func):
     x_data = np.asarray(argv1.split(","), dtype=np.float64)
     y_data = np.asarray(argv2.split(","), dtype=np.float64)
 
@@ -28,7 +48,8 @@ def fit_curve(argv1, argv2):
 
         return AIC, BIC
 
-    popt, pcov = curve_fit(linear_regression, x_data, y_data)
+    selected_regression = all_regressions[int(selected_func)]
+    popt, pcov = curve_fit(selected_regression, x_data, y_data)
 
     # get standard error for values
     stdrVal = np.sqrt(np.diag(pcov))
@@ -37,7 +58,7 @@ def fit_curve(argv1, argv2):
     r = pearsonr(x_data, y_data)
 
     # get r squared
-    residuals = y_data - linear_regression(x_data, *popt)
+    residuals = y_data - selected_regression(x_data, *popt)
     ss_res = np.sum(residuals ** 2)  # ss means sum of squares?
     ss_tot = np.sum((y_data - np.mean(y_data)) ** 2)
     r_squared = 1 - (ss_res / ss_tot)
@@ -83,7 +104,7 @@ def fit_curve(argv1, argv2):
 
 
 if __name__ == "__main__":
-    fit_result = fit_curve(sys.argv[1], sys.argv[2])
+    fit_result = fit_curve(sys.argv[1], sys.argv[2], sys.argv[3])
     sys.stdout.write(fit_result)
     sys.stdout.flush()
     sys.exit(0)

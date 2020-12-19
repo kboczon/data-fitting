@@ -28,7 +28,7 @@ const Plot: React.FC<FunctionPlotProps> = React.memo(({options}) => {
     useEffect(() => {
       try {
         functionPlot(Object.assign({}, options, {target: rootEl.current}));
-        console.log(options);
+        // console.log(options);
       } catch (e) {
       }
     });

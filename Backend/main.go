@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
@@ -12,12 +13,14 @@ import (
 )
 
 type FitArgs struct {
-	Arg1 []json.Number `json:"arg1"`
-	Arg2 []json.Number `json:"arg2"`
+	Arg1     []json.Number `json:"xRow"`
+	Arg2     []json.Number `json:"yRow"`
+	Equation string        `json:"equation"`
 }
 
 func main() {
 	router := gin.Default()
+	router.Use(cors.Default())
 	gin.SetMode(gin.DebugMode) //ReleaseMode
 
 	router.GET("/", func(context *gin.Context) {
@@ -41,8 +44,9 @@ func main() {
 		}
 		arg1 = strings.TrimSuffix(arg1, ",")
 		arg2 = strings.TrimSuffix(arg2, ",")
+		fmt.Println(requestData.Equation)
 
-		c := exec.Command("C:\\Users\\adria\\AppData\\Local\\Programs\\Python\\Python39\\python.exe", "../PyScript/main.py", arg1, arg2)
+		c := exec.Command("C:\\Users\\adria\\AppData\\Local\\Programs\\Python\\Python39\\python.exe", "../PyScript/main.py", arg1, arg2, requestData.Equation)
 		stderr := &bytes.Buffer{}
 		stdout := &bytes.Buffer{}
 		c.Stderr = stderr
@@ -52,8 +56,8 @@ func main() {
 		}
 
 		context.JSON(http.StatusOK, gin.H{
-			"xData": "xData",
-			"yData": "yData",
+			"xData":    "xData",
+			"yData":    "yData",
 			"response": stdout.String(),
 		})
 	})
