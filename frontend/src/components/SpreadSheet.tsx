@@ -3,9 +3,10 @@ import Plot from "./Plot";
 import {FunctionPlotDatum} from "function-plot/dist/types";
 import FitSelector from "./FitSelector";
 import {api, CalculationResponse} from "../utils/api";
+import {dataSet1, dataSet2} from "../utils/datasets";
 
 const SpreadSheet = () => {
-  const [axisData, setAxisData] = useState([[1, 1], [2, 1.2], [3, 3], [4,7], [5,7]]);
+  const [axisData, setAxisData] = useState([[1, 1], [2, 1.2], [3, 3], [4, 7], [5, 7]]);
   const [plotFn, setPlotFn] = useState("a*x+b");
   const [plotOpts, setPlotOpts] = useState<FunctionPlotDatum[]>([]);
   const [response, setResponse] = useState<CalculationResponse | undefined>(undefined);
@@ -25,33 +26,76 @@ const SpreadSheet = () => {
   }
 
   const sendRequest = async () => {
-    const resp = await api.sendArguments(axisData.map(dataSet => dataSet[0]), axisData.map(dataSet => dataSet[1]));
-    setResponse(resp);
-    const equation = `${resp?.coefficients[0]}*x+${resp?.coefficients[1]}`;
+    const resp = await api.sendArguments(axisData.map(dataSet => dataSet[0]), axisData.map(dataSet => dataSet[1]), plotFn);
+    if (!resp) return
+    setResponse(resp[0]);
+    const newFnPlot = plotFn.split("");
+    newFnPlot.forEach((letter, index) => {
+      if (resp[1][letter] !== undefined)
+        newFnPlot[index] = resp[1][letter].toString();
+    })
     setPlotOpts([{
       points: axisData,
       fnType: 'points',
       graphType: 'scatter',
-    },{
-      fn: equation,
+    }, {
+      fn: newFnPlot.join("").replaceAll("**", "^"),
       graphType: 'polyline'
     }]);
   }
 
   return (
-    <>
-      <div>
-        <p>x</p>
-        {axisData.map((dataSet, i) => <input name="xAxis" key={i} onPaste={onDataPaste} value={dataSet[0]} readOnly={true}/>)}
-        <p>y</p>
-        {axisData.map((dataSet, i) => <input name="yAxis" key={i} onPaste={onDataPaste} value={dataSet[1]} readOnly={true}/>)}
+    <div className="main__flex">
+      <div className="spreadsheet__flex">
+        <div>
+          <button onClick={() => setAxisData(dataSet1)}>Dataset 1</button>
+          <p className="spreadsheet__cell">x</p>
+          {axisData.map((dataSet, i) => <input
+            key={i}
+            className="spreadsheet__cell"
+            name="xAxis"
+            onPaste={onDataPaste}
+            value={dataSet[0]}
+            readOnly={true}/>
+          )}
+        </div>
+        <div>
+          <button onClick={() => setAxisData(dataSet2)}>Dataset 2</button>
+          <p className="spreadsheet__cell">y</p>
+          {axisData.map((dataSet, i) => <input
+            key={i}
+            className="spreadsheet__cell"
+            name="yAxis"
+            onPaste={onDataPaste}
+            value={dataSet[1]}
+            readOnly={true}/>
+          )}
+        </div>
       </div>
-      <Plot options={{
-        data: plotOpts
-      }}/>
-      <FitSelector/>
-      <button onClick={sendRequest}>Proceed</button>
-    </>
+      <div className="center__text flex__column">
+        <Plot options={{
+          width: 800,
+          height: 400,
+          data: plotOpts
+        }}/>
+        <div className="results__flex">
+          <FitSelector setModel={setPlotFn} handleRequest={sendRequest}/>
+          {response && <div>
+              <h3>Results</h3>
+              <p>Coefficients: {response?.coefficients.join(", ")}</p>
+              <p>Standard Error of every value: {response?.standardValuesError.join(", ")}</p>
+              <p>Standard Error: {response?.standardError}</p>
+              <p>R: {response?.r}</p>
+              <p>R^2: {response?.r2}</p>
+              <p>R^2 Adj: {response?.r2Adjusted}</p>
+              <p>DOF: {response?.dof}</p>
+              <p>AICC: {response?.aicc}</p>
+              <p>BIC: {response?.bic}</p>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -86,3 +130,6 @@ export default SpreadSheet;
 
 //1 podanie wzoru do frontu (rysowanie wykresu w js)
 //2 podanie wzoru do skryptu(liczenie w python)
+
+// function data -> [{letter: a, value: 1.23234}]
+//replace letter with value 

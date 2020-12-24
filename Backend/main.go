@@ -44,7 +44,6 @@ func main() {
 		}
 		arg1 = strings.TrimSuffix(arg1, ",")
 		arg2 = strings.TrimSuffix(arg2, ",")
-		fmt.Println(requestData.Equation)
 
 		c := exec.Command("C:\\Users\\adria\\AppData\\Local\\Programs\\Python\\Python39\\python.exe", "../PyScript/main.py", arg1, arg2, requestData.Equation)
 		stderr := &bytes.Buffer{}
@@ -55,10 +54,16 @@ func main() {
 			fmt.Println("Error: ", err, "|", stderr.String())
 		}
 
+		output := stdout.String()
+		results := strings.Split(output, "Vars:")
+
+		if len(results) == 0 || len(results) == 1 {
+			context.AbortWithStatus(http.StatusBadRequest)
+		}
+
 		context.JSON(http.StatusOK, gin.H{
-			"xData":    "xData",
-			"yData":    "yData",
-			"response": stdout.String(),
+			"fitResult":    results[0],
+			"fitVariables": results[1],
 		})
 	})
 

@@ -1,39 +1,17 @@
 # weighting is sigma in curve_fit function
 import sys
 import json
+import re
 
 sys.path.append("C:\\Users\\adria\\PycharmProjects\\pythonProject\\venv\\Lib\\site-packages")
 
 import numpy as np
+from numpy import exp
 from scipy.optimize import curve_fit
 from scipy.stats import pearsonr, norm
 
 
-def linear_regression(x, a, b):
-    return a * x + b
-
-
-def quadratic_regression(x, a, b, c):
-    return a * x ** 2 + b * x + c
-
-
-def quartic_regression(x, a, b, c, d, e):
-    return a * x ** 4 + b * x ** 3 + c * x ** 2 + d * x + e
-
-
-def nonlinear_4pl_regression(x, a, b, c, d):
-    return d + ((a - d) / (1 + (x / c) ** b))
-
-
-def nonlinear_half_life_regression(x, a, b, c):
-    return a + (b / np.exp(2 * x / c))
-
-
-all_regressions = [linear_regression, quadratic_regression, quartic_regression, nonlinear_4pl_regression,
-                   nonlinear_half_life_regression]
-
-
-def fit_curve(argv1, argv2, selected_func):
+def fit_curve(argv1, argv2, fit_model):
     x_data = np.asarray(argv1.split(","), dtype=np.float64)
     y_data = np.asarray(argv2.split(","), dtype=np.float64)
 
@@ -48,8 +26,7 @@ def fit_curve(argv1, argv2, selected_func):
 
         return AIC, BIC
 
-    selected_regression = all_regressions[int(selected_func)]
-    popt, pcov = curve_fit(selected_regression, x_data, y_data)
+    popt, pcov = curve_fit(fit_model, x_data, y_data)
 
     # get standard error for values
     stdrVal = np.sqrt(np.diag(pcov))
@@ -58,7 +35,7 @@ def fit_curve(argv1, argv2, selected_func):
     r = pearsonr(x_data, y_data)
 
     # get r squared
-    residuals = y_data - selected_regression(x_data, *popt)
+    residuals = y_data - fit_model(x_data, *popt)
     ss_res = np.sum(residuals ** 2)  # ss means sum of squares?
     ss_tot = np.sum((y_data - np.mean(y_data)) ** 2)
     r_squared = 1 - (ss_res / ss_tot)
@@ -85,26 +62,50 @@ def fit_curve(argv1, argv2, selected_func):
 
     result_dict = {
         "coefficients": tuple(popt),
-        "standard_values_error": stdrVal.tolist(),
+        "standardValuesError": stdrVal.tolist(),
         "r": r[0],
-        "r^2": r_squared,
-        "r^2 adjusted": adj_r,
-        "standard_error": sErr,
+        "r2": r_squared,
+        "r2Adjusted": adj_r,
+        "standardError": sErr,
         "dof": len(y_data) - 2,
-        "range_confidence_up": popt_up.tolist(),
-        "range_confidence_dw": popt_dw.tolist(),
-        "covariance_plot": pcov.tolist(),
+        "rangeConfidenceUp": popt_up.tolist(),
+        "rangeConfidenceDw": popt_dw.tolist(),
+        "covariancePlot": pcov.tolist(),
         "aicc": aic,
         "bic": bic,
     }
 
     result_json = json.dumps(result_dict)
 
-    return result_json
+    return result_json, tuple(popt)
+
+
+def parse_equation(equation):
+    return list(filter(None, re.split("[^a-wz]", equation)))
+
+
+def create_function(equation, args_arr):
+    func_args = ",".join(list(dict.fromkeys(args_arr)))
+    new_func = f'def created_func(x,{func_args}):\n  return {equation}'
+    the_code = compile(new_func, 'test', 'exec')
+    exec(the_code, globals())
+    return created_func
 
 
 if __name__ == "__main__":
-    fit_result = fit_curve(sys.argv[1], sys.argv[2], sys.argv[3])
-    sys.stdout.write(fit_result)
+    parsed_vars = parse_equation(sys.argv[3])
+    fit_model = create_function(sys.argv[3], parsed_vars)
+    fit_result_json, coeffs_list = fit_curve(sys.argv[1], sys.argv[2], fit_model)
+
+    func_vars_dict = dict(zip(parsed_vars, coeffs_list))
+    func_vars_json = json.dumps(func_vars_dict)
+
+    sys.stdout.write(fit_result_json)
+    sys.stdout.write("Vars:")
+    sys.stdout.write(func_vars_json)
     sys.stdout.flush()
     sys.exit(0)
+
+    # exec("""def a(x):
+    #    return x+1""")
+    # print(a(2))

@@ -1,5 +1,6 @@
 type ResultResponse = {
-  response: string;
+  fitResult: string;
+  fitVariables: string;
 }
 
 export type CalculationResponse = {
@@ -17,22 +18,25 @@ export type CalculationResponse = {
   standardValuesError: number[];
 }
 
+export type FitVariables = { [key: string]: number; }
+
 class Api {
   private _url = "http://localhost:8000"
 
-  public async sendArguments(xRow: number[], yRow: number[]) {
+  public async sendArguments(xRow: number[], yRow: number[], plotFn: string): Promise<[CalculationResponse, FitVariables] | undefined> {
     try {
       const response = await fetch(`${this._url}/`, {
         method: "POST",
         body: JSON.stringify({
           xRow: xRow,
           yRow: yRow,
-          equation: "1"
+          equation: plotFn
         }),
       });
+      if(response.status === (403 | 500)) return;
       const result = await response.json() as ResultResponse;
-      result.response = result.response.replaceAll(/[-]?Infinity/g, "\"Infinity\"");
-      return JSON.parse(result.response) as CalculationResponse;
+      result.fitResult = result.fitResult.replaceAll(/[-]?Infinity|Nan/gi, "\"Infinity or NAN\"");
+      return [JSON.parse(result.fitResult) as CalculationResponse, JSON.parse(result.fitVariables) as FitVariables];
     } catch (error) {
       console.log("error: ", error);
       return;
