@@ -45,7 +45,7 @@ func main() {
 		arg1 = strings.TrimSuffix(arg1, ",")
 		arg2 = strings.TrimSuffix(arg2, ",")
 
-		c := exec.Command("C:\\Users\\adria\\AppData\\Local\\Programs\\Python\\Python39\\python.exe", "../PyScript/main.py", arg1, arg2, requestData.Equation)
+		c := exec.Command("python", "./main.py", arg1, arg2, requestData.Equation)
 		stderr := &bytes.Buffer{}
 		stdout := &bytes.Buffer{}
 		c.Stderr = stderr
@@ -59,6 +59,7 @@ func main() {
 
 		if len(results) == 0 || len(results) == 1 {
 			context.AbortWithStatus(http.StatusBadRequest)
+			return
 		}
 
 		context.JSON(http.StatusOK, gin.H{

@@ -1,6 +1,8 @@
 frontend/node_modules
 frontend/package-lock.json
 frontend/.eslintcache
+frontend/debug.log
 **/.idea
 backend/go.sum
+backend/backend.exe
 **/*.txt

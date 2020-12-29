@@ -2,13 +2,10 @@
 import sys
 import json
 import re
-
-sys.path.append("C:\\Users\\adria\\PycharmProjects\\pythonProject\\venv\\Lib\\site-packages")
-
 import numpy as np
-from numpy import exp
 from scipy.optimize import curve_fit
 from scipy.stats import pearsonr, norm
+# from numpy import exp
 
 
 def fit_curve(argv1, argv2, fit_model):
@@ -54,9 +51,9 @@ def fit_curve(argv1, argv2, fit_model):
     popt_dw = popt - nstd * stdrVal
 
     # Burnham and Anderson
-    # ΔAIC < 2 -> substantial evidence for the model.
-    # 3 > ΔAIC 7 -> less support for the model.
-    # ΔAIC > 10 -> the model is unlikely.
+    # AIC < 2 -> substantial evidence for the model.
+    # 3 > AIC 7 -> less support for the model.
+    # AIC > 10 -> the model is unlikely.
     ll = log_likelihood(len(y_data), ss_res)
     aic, bic = aic_bic(ll, len(y_data), len(popt))
 
@@ -105,7 +102,3 @@ if __name__ == "__main__":
     sys.stdout.write(func_vars_json)
     sys.stdout.flush()
     sys.exit(0)
-
-    # exec("""def a(x):
-    #    return x+1""")
-    # print(a(2))
