@@ -5,7 +5,8 @@ import re
 import numpy as np
 from scipy.optimize import curve_fit
 from scipy.stats import pearsonr, norm
-# from numpy import exp
+from numpy import exp, log, sin, sinh, cos, cosh, tan, tanh, abs, average as avg, degrees, log10, mod, pi, power as pow, \
+    product, radians, sqrt
 
 
 def fit_curve(argv1, argv2, fit_model):
@@ -77,8 +78,18 @@ def fit_curve(argv1, argv2, fit_model):
     return result_json, tuple(popt)
 
 
+def filterWords(letter):
+    words = ["exp", "log", "sin", "sinh", "cos", "cosh", "tan", "tanh", "abs", "avg", "degrees", "log10", "mod", "pi",
+             "pow", "product", "radians", "sqrt", "", " "]
+
+    if letter in words:
+        return False
+    else:
+        return True
+
+
 def parse_equation(equation):
-    return list(filter(None, re.split("[^a-wz]", equation)))
+    return list(filter(filterWords, re.split("[^a-wz]", equation)))
 
 
 def create_function(equation, args_arr):

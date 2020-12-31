@@ -5,4 +5,5 @@ frontend/debug.log
 **/.idea
 backend/go.sum
 backend/backend.exe
-**/*.txt
+#**/*.txt
+backend/prev.txt
