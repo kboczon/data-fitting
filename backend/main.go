@@ -46,6 +46,7 @@ func main() {
 		arg2 = strings.TrimSuffix(arg2, ",")
 
 		c := exec.Command("python", "./main.py", arg1, arg2, requestData.Equation)
+// 		c := exec.Command("py", "./py-script/src/main.py", arg1, arg2, requestData.Equation)
 		stderr := &bytes.Buffer{}
 		stdout := &bytes.Buffer{}
 		c.Stderr = stderr

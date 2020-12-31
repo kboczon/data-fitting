@@ -2,7 +2,7 @@
 :root {
     --tooltip-text-color: white;
     --tooltip-background-color: black;
-    --tooltip-margin: -90px;
+    --tooltip-margin: -100px;
     --tooltip-arrow-size: 6px;
 }
 
@@ -25,7 +25,8 @@
     font-family: sans-serif;
     line-height: 1;
     z-index: 100;
-    white-space: nowrap;
+    white-space: pre-line;
+    /*white-space: nowrap;*/
 }
 
 /* CSS border triangles */
@@ -43,7 +44,9 @@
 
 /* Absolute positioning */
 .Tooltip-Tip.top {
-    top: calc(var(--tooltip-margin) * -1);
+    /*top: calc(var(--tooltip-margin) * -1);*/
+    min-width: 15em;
+    top: -300px;
 }
 /* CSS border triangles */
 .Tooltip-Tip.top::before {

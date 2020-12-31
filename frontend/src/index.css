@@ -42,7 +42,9 @@ p {
 }
 
 .input__model {
-    width: 20em;
+    display: block;
+    width: 30em;
+    padding: 0.5em;
 }
 
 .main__flex {
@@ -54,27 +56,6 @@ p {
 .center__text {
     text-align: center;
 }
-
-.function-plot {
-    /*transform: scale(1.5,1.5);*/
-
-    /*width: 150em;*/
-    /*height: 50em;*/
-}
-
-/*.canvas {*/
-/*  transform: translate(50, 50);*/
-/*}*/
-
-/*.zoom-and-drag {*/
-/*  width: 150em;*/
-/*  height: 50em;*/
-/*}*/
-
-/*.content {*/
-/*  width: 150em;*/
-/*  height: 50em;*/
-/*}*/
 
 .fit__model__btn {
     display: block;
@@ -90,3 +71,38 @@ p {
     background-color: #76d976;
 }
 
+.question__mark__style {
+    cursor: pointer;
+    display: inline-block;
+
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    padding: 8px;
+
+    background: #fff;
+    border: 2px solid #fd4f4f;
+    color: #fd4f4f;
+    text-align: center;
+
+    font: 19px Arial, sans-serif;
+    margin: 0 0.5em;
+}
+
+.question__mark__style:hover {
+    background: #fd4f4f;
+    border: 2px solid #fff;
+    color: #fff;
+}
+
+
+.flex__text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1em;
+}
+
+.remove__margins {
+    margin: 0;
+}

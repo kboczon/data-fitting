@@ -27,7 +27,7 @@ const SpreadSheet = () => {
 
   const sendRequest = async () => {
     const resp = await api.sendArguments(axisData.map(dataSet => dataSet[0]), axisData.map(dataSet => dataSet[1]), plotFn);
-    if (!resp) return
+    if (!resp) return setResponse(undefined);
     setResponse(resp[0]);
     const newFnPlot = plotFn.split("");
     newFnPlot.forEach((letter, index) => {
@@ -100,36 +100,3 @@ const SpreadSheet = () => {
 }
 
 export default SpreadSheet;
-
-// {
-//   fn: 'x',
-//   graphType: 'polyline'
-// }, {
-//   points: axisData,
-//   fnType: 'points',
-//   graphType: 'scatter',
-// }
-
-
-/*<tr>*/
-/*  <th>i</th>*/
-/*  <th>x</th>*/
-/*  <th>y</th>*/
-/*</tr>*/
-/*<tr>*/
-/*  <td>i</td>*/
-/*  <td>AA</td>*/
-/*  <td>BB</td>*/
-/*</tr>*/
-
-// setPlotOpts([{
-//   points: axisData,
-//   fnType: 'points',
-//   graphType: 'scatter',
-// }])
-
-//1 podanie wzoru do frontu (rysowanie wykresu w js)
-//2 podanie wzoru do skryptu(liczenie w python)
-
-// function data -> [{letter: a, value: 1.23234}]
-//replace letter with value 

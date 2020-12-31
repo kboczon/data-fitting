@@ -89,11 +89,11 @@ def filterWords(letter):
 
 
 def parse_equation(equation):
-    return list(filter(filterWords, re.split("[^a-wz]", equation)))
+    return list(dict.fromkeys(filter(filterWords, re.split("[^a-wz]", equation))))
 
 
 def create_function(equation, args_arr):
-    func_args = ",".join(list(dict.fromkeys(args_arr)))
+    func_args = ",".join(args_arr)
     new_func = f'def created_func(x,{func_args}):\n  return {equation}'
     the_code = compile(new_func, 'test', 'exec')
     exec(the_code, globals())

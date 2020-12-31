@@ -40,7 +40,13 @@ const FitSelector: React.FC<Props> = ({setModel, handleRequest}) => {
         </Tooltip>
       </div>
       <div>
-        <h3>Or set custom model (for power use ** not ^)</h3>
+        <div className="flex__text">
+          <h3 className="remove__margins">Or set custom model</h3>
+          <Tooltip direction={"top"}
+                   content={"1. For power use pow()/** not ^\n2. Available math functions: \n - exp, \n - log, \n - sin, \n - sinh, \n - cos, \n - cosh, \n - tan, \n - tanh, \n - abs, \n - avg, \n - degrees, \n - log10, \n - mod, \n - pi, \n - pow, \n product, \n - radians, \n - sqrt\n3. Press set model"}>
+            <p className="question__mark__style">?</p>
+          </Tooltip>
+        </div>
         <input className="input__model"
                placeholder={"Write custom model here (ex. a*x**2+b*x+c)"}
                value={customModel}

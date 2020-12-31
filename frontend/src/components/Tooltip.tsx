@@ -25,7 +25,6 @@ const Tooltip: React.FC<Props> = ({content, delay , children, direction}) => {
   return (
     <div
       className="Tooltip-Wrapper"
-      // When to show the tooltip
       onMouseEnter={showTip}
       onMouseLeave={hideTip}
     >
@@ -33,7 +32,6 @@ const Tooltip: React.FC<Props> = ({content, delay , children, direction}) => {
       {children}
       {active && (
         <div className={`Tooltip-Tip ${direction || "right"}`}>
-          {/* Content */}
           {content}
         </div>
       )}
