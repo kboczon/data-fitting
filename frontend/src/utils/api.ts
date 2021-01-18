@@ -1,3 +1,5 @@
+import {config} from "../config";
+
 type ResultResponse = {
   fitResult: string;
   fitVariables: string;
@@ -21,7 +23,7 @@ export type CalculationResponse = {
 export type FitVariables = { [key: string]: number; }
 
 class Api {
-  private _url = "http://localhost:8000"
+  private _url = config.url.API_URL;
 
   public async sendArguments(xRow: number[], yRow: number[], plotFn: string): Promise<[CalculationResponse, FitVariables] | undefined> {
     try {
@@ -33,10 +35,28 @@ class Api {
           equation: plotFn
         }),
       });
-      if(response.status === (403 | 500)) return;
+      if (response.status === (403 | 500)) return;
       const result = await response.json() as ResultResponse;
       result.fitResult = result.fitResult.replaceAll(/[-]?Infinity|Nan/gi, "\"Infinity or NAN\"");
       return [JSON.parse(result.fitResult) as CalculationResponse, JSON.parse(result.fitVariables) as FitVariables];
+    } catch (error) {
+      console.log("error: ", error);
+      return;
+    }
+  }
+
+  public async calculateBestFit(xRow: number[], yRow: number[]) {
+    try {
+      const response = await fetch(`${this._url}/best-fit`, {
+        method: "POST",
+        body: JSON.stringify({
+          xRow: xRow,
+          yRow: yRow,
+        }),
+      });
+      if (response.status === (403 | 500)) return;
+      const result = await response.json();
+      return result.calculationResult;
     } catch (error) {
       console.log("error: ", error);
       return;

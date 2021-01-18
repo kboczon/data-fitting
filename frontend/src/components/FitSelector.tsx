@@ -4,9 +4,10 @@ import Tooltip from "./Tooltip";
 type Props = {
   setModel: React.Dispatch<React.SetStateAction<string>>;
   handleRequest: () => Promise<void>;
+  findBestFit: () => Promise<void>;
 }
 
-const FitSelector: React.FC<Props> = ({setModel, handleRequest}) => {
+const FitSelector: React.FC<Props> = ({setModel, handleRequest, findBestFit}) => {
   const [customModel, setCustomModel] = useState("");
   const changeCustomModel = () => {
     setModel(customModel);
@@ -55,6 +56,8 @@ const FitSelector: React.FC<Props> = ({setModel, handleRequest}) => {
         <button onClick={changeCustomModel}>Set Model</button>
         <br/>
         <button className="proceed__btn" onClick={handleRequest}>Calculate</button>
+        <p>OR</p>
+        <button className="proceed__btn" onClick={findBestFit}>Find Best Fit</button>
         <br/>
       </div>
     </div>

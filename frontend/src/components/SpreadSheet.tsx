@@ -44,6 +44,11 @@ const SpreadSheet = () => {
     }]);
   }
 
+  const findBestFit = async () => {
+    const resp = await api.calculateBestFit(axisData.map(dataSet => dataSet[0]), axisData.map(dataSet => dataSet[1]));
+    window.alert(resp);
+  }
+
   return (
     <div className="main__flex">
       <div className="spreadsheet__flex">
@@ -79,7 +84,7 @@ const SpreadSheet = () => {
           data: plotOpts
         }}/>
         <div className="results__flex">
-          <FitSelector setModel={setPlotFn} handleRequest={sendRequest}/>
+          <FitSelector setModel={setPlotFn} handleRequest={sendRequest} findBestFit={findBestFit}/>
           {response && <div>
               <h3>Results</h3>
               <p>Coefficients: {response?.coefficients.join(", ")}</p>
