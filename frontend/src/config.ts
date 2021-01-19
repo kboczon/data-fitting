@@ -1,6 +1,6 @@
 const production = {
   url: {
-    API_URL: 'http://localhost:8000'
+    API_URL: 'http://lin1.wtools.us/api'
   }
 };
 
