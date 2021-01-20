@@ -27,7 +27,7 @@ func main() {
 	router.Use(cors.Default())
 	gin.SetMode(gin.DebugMode) //ReleaseMode
 
-	router.POST("/best-fit", func(context *gin.Context) {
+	router.POST("/api/best-fit", func(context *gin.Context) {
 		var requestData Args
 		body, _ := ioutil.ReadAll(context.Request.Body)
 		if err := json.Unmarshal(body, &requestData); err != nil {
@@ -44,8 +44,8 @@ func main() {
 		arg1 = strings.TrimSuffix(arg1, ",")
 		arg2 = strings.TrimSuffix(arg2, ",")
 
-		//c := exec.Command("python", "./main.py", arg1, arg2)
-		c := exec.Command("py", "./py-script/src/best-fit.py", arg1, arg2)
+		c := exec.Command("python", "./best-fit.py", arg1, arg2)
+// 		c := exec.Command("py", "./py-script/src/best-fit.py", arg1, arg2)
 		stderr := &bytes.Buffer{}
 		stdout := &bytes.Buffer{}
 		c.Stderr = stderr
@@ -60,7 +60,7 @@ func main() {
 		}) //context.String(http.StatusOK, "Hello")
 	})
 
-	router.POST("/", func(context *gin.Context) {
+	router.POST("/api/", func(context *gin.Context) {
 		var requestData ArgsWithEquation
 		body, _ := ioutil.ReadAll(context.Request.Body)
 		if err := json.Unmarshal(body, &requestData); err != nil {
@@ -77,8 +77,8 @@ func main() {
 		arg1 = strings.TrimSuffix(arg1, ",")
 		arg2 = strings.TrimSuffix(arg2, ",")
 
-		//c := exec.Command("python", "./main.py", arg1, arg2, requestData.Equation)
-		c := exec.Command("py", "./py-script/src/main.py", arg1, arg2, requestData.Equation)
+		c := exec.Command("python", "./main.py", arg1, arg2, requestData.Equation)
+// 		c := exec.Command("py", "./py-script/src/main.py", arg1, arg2, requestData.Equation)
 		stderr := &bytes.Buffer{}
 		stdout := &bytes.Buffer{}
 		c.Stderr = stderr

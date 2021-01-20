@@ -10,5 +10,6 @@ RUN go build
 COPY /py-script/requirements.txt .
 RUN pip install -r requirements.txt
 COPY /py-script/src/main.py .
+COPY /py-script/src/best-fit.py .
 
 CMD ["./backend"]
