@@ -2,8 +2,7 @@ FROM node:15.5.1-alpine3.10 as react_build
 WORKDIR /app
 COPY . /app/ 
 
-RUN npm install --silent
-RUN npm install react-scripts@latest -g --silent
+RUN npm install
 RUN npm run build 
 
 FROM nginx:latest
