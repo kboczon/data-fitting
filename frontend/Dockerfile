@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . /app/ 
 
 RUN npm install --silent
-RUN npm install react-scripts@4.0.1 -g --silent 
+RUN npm install react-scripts@latest -g --silent
 RUN npm run build 
 
 FROM nginx:latest
