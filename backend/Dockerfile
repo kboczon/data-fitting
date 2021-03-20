@@ -1,15 +1,20 @@
-FROM golang:latest
-COPY --from=python:latest / /
-
+FROM golang:latest AS goc
 WORKDIR /app
 
 COPY go.mod main.go ./
 RUN go mod download
-RUN go build
+RUN env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o backend
 
-COPY /py-script/requirements.txt .
-RUN pip install -r requirements.txt
-COPY /py-script/src/main.py .
-COPY /py-script/src/best-fit.py .
+FROM alpine:latest
+WORKDIR /app
+
+RUN apk update
+RUN apk add python3
+RUN apk add py3-numpy
+
+COPY --from=goc /app/ /app/
+
+COPY py-script/src/main.py .
+COPY py-script/src/best-fit.py .
 
 CMD ["./backend"]
