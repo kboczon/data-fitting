@@ -11,10 +11,10 @@ WORKDIR /app
 RUN apk update
 RUN apk add python3
 RUN apk add py3-numpy
+RUN apk add py3-scipy
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 COPY --from=goc /app/ /app/
-
 COPY py-script/src/main.py .
 COPY py-script/src/best-fit.py .
-
 CMD ["./backend"]
