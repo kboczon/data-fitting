@@ -1,6 +1,6 @@
 const production = {
   url: {
-    API_URL: 'http://lin1.wtools.us/api'
+    API_URL: 'https://data-fitting.wtools.us/api'
   }
 };
 
